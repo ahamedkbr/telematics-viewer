@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Typography, Paper, CircularProgress } from "@mui/material";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [loading, setLoading] = useState(false);
+  const [trips, setTrips] = useState([]);
 
+  const formatOpts = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  };
+
+  useEffect(() => {
+    async function getData() {
+      let res = await axios.get("http://localhost:3030/device-detail/trips/866344057563434");
+      console.log(res.data);
+      setTrips(res.data.trips);
+      setLoading(false);
+    }
+    setLoading(true);
+    getData();
+  }, []);
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Typography variant="h2">Telematics data</Typography>
+      {
+        loading ? <CircularProgress /> : <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>S.no</TableCell>
+                <TableCell>Start Time</TableCell>
+                <TableCell>End Time</TableCell>
+                <TableCell>Start(Lat,Long)</TableCell>
+                <TableCell>End(Lat,Long)</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {trips.map((trip, index) => (
+                <TableRow
+                  key={index}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">{index + 1}</TableCell>
+                  <TableCell>{new Intl.DateTimeFormat('en-IN', formatOpts).format(new Date(trip.start))}</TableCell>
+                  <TableCell>{new Intl.DateTimeFormat('en-IN', formatOpts).format(new Date(trip.end))}</TableCell>
+                  <TableCell>{trip.startPos.lat}, {trip.startPos.long}</TableCell>
+                  <TableCell>{trip.endPos.lat}, {trip.endPos.long}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      }
     </>
-  )
+  );
 }
 
-export default App
+export default App;

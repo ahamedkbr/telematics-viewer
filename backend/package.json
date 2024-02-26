@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/server",
+    "start": "node src/server"
+  },
   "devDependencies": {
     "nodemon": "^3.0.3"
   },
