@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
+
 app.get("/device-details/all", async (req, res) => {
   try {
     const data = await DeviceMetrics.find({});
@@ -19,7 +20,10 @@ app.get("/device-details/all", async (req, res) => {
 
 app.get("/device-detail/:imei", async (req, res) => {
   try {
+    const pageNumber = req.query.pageNumber ? parseInt(req.query.pageNumber) : 1;
+    const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 8;
 
+    const skip = (pageNumber - 1) * pageSize;
     // * Aggregate Query : Get all data when the IGNITION and MOVEMENT was ON and speed is greater than 5
     // ! DANGER : TOUCH THIS AGGREGATION AT YOUR OWN RISK
     const data = await DeviceMetrics.aggregate([
@@ -85,8 +89,14 @@ app.get("/device-detail/:imei", async (req, res) => {
         }
       }, {
         $sort: {
-          timestamp: 1
+           timestamp: -1 
         }
+      },
+      {
+        $skip: skip
+      },
+      {
+        $limit: pageSize
       }
     ]);
     return res.status(200).json({ data });
