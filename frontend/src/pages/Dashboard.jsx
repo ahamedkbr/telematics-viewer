@@ -24,14 +24,12 @@ function Dashboard() {
 
   async function getData() {
     let res = await axios.get(`http://localhost:3030/device-detail/trips/${imei}`);
-    console.log(res.data);
     setTrips(res.data.trips);
     setLoading(false);
   }
 
   async function getIoData() {
     let result = await axios.get(`http://localhost:3030/device-detail/${imei}?pageNumber=${page}`);
-    // console.log("iodata",result)
     setIodata(result.data.data);
     setLoading(false);
   }
@@ -42,7 +40,6 @@ function Dashboard() {
     getIoData();
   }, [page]);
 
-  console.log("iodata", iodata);
   return (
     <>
       <Typography variant="h2">Telematics data</Typography>

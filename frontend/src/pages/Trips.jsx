@@ -11,8 +11,6 @@ function Trips() {
   const [trips, setTrips] = useState([]);
   const [tripView, setTripView] = useState(null);
 
-  console.log(tripView);
-
   const formatOpts = {
     year: 'numeric',
     month: 'short',
@@ -23,14 +21,12 @@ function Trips() {
   };
 
   const handleTripView = (tripIndex) => {
-    console.log(trips[tripIndex]);
     setTripView(trips[tripIndex]);
   };
 
 
   async function getData() {
     let res = await axios.get(`http://localhost:3030/device-detail/trips/${imei}`);
-    console.log(res.data);
     setTrips(res.data.trips);
     setLoading(false);
   }

@@ -21,23 +21,19 @@ const TripView = ({ tripStartPos, tripEndPos, positions }) => {
         bounds.extend({ lat: p.latitude, lng: p.longitude });
       });
       map.fitBounds(bounds);
-      console.log(path);
       const intervalId = setInterval(() => {
-        console.log("OK", index);
         const newLat = positions[index].latitude;
         const newLng = positions[index].longitude;
 
-        console.log({ lat: newLat, lng: newLng, tripEndPos });
         setPosition({ lat: newLat, lng: newLng });
 
         if (newLat === tripEndPos.lat && newLng === tripEndPos.long) {
-          console.log("Hmm");
           clearInterval(intervalId);
         }
         index++;
       }, 750);
 
-      return () => clearInterval(intervalId); // Cleanup on component unmount
+      return () => { clearInterval(intervalId); setPath([]); }; // Cleanup on component unmount
     }
   }, [map, tripStartPos, tripEndPos, positions]);
 
