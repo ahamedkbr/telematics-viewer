@@ -43,7 +43,7 @@ const TripView = ({ tripStartPos, tripEndPos, positions }) => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "API_KEY_GOES_HERE"
+    googleMapsApiKey: import.meta.env.VITE_GM_API_KEY
   });
 
   return (
